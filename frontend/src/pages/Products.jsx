@@ -5,8 +5,35 @@ import { useContext, useState } from "react";
 import PageHeader from "../components/PageHeader";
 import { SearchContext } from "../context/SearchContext";
 import ConfirmModal from "../components/ConfirmModal";
+import { useEffect } from "react";
+import axios from "axios";
 
 const Products = () => {
+
+    // const [products, setProducts] = useState([]);
+    // const [loading, setLoading] = useState(true);
+
+    // useEffect(() => {
+    //     const fetchedProducts = async () => {
+    //         try {
+    //             const response = await axios.get("http://localhost:5000/api/products");
+    //             setProducts(response.data.data);
+    //         } catch (error) {
+    //             console.log("Error fetching products", error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     fetchedProducts();
+    // }, [])
+
+    // if(loading) {
+    //     return (
+    //         <DashboardLayout>
+    //             <p className="text-gray-500 text-center mt-10">Loading Products...</p>
+    //         </DashboardLayout>
+    //     )
+    // };
 
     const [products, setProducts] = useState(() => {
         const saved = localStorage.getItem("products");
@@ -22,7 +49,7 @@ const Products = () => {
 
     const {search} = useContext(SearchContext);
 
-    const addProduct = (newProduct) => {
+    const addProduct = async (newProduct) => {
         const updated = [...products, {...newProduct, id: Date.now()}];
         setProducts(updated);
         localStorage.setItem("products", JSON.stringify(updated));
@@ -61,10 +88,10 @@ const Products = () => {
         setOpen(false);
     }
 
-    const filteredProducts = products.filter(product =>
+    const filteredProducts = search ? products.filter(product =>
         product.name.toLowerCase().includes(search.toLowerCase()) ||
         product.category.toLowerCase().includes(search.toLowerCase())
-    )
+    ) : products;
 
     return (
         <DashboardLayout>
@@ -77,7 +104,11 @@ const Products = () => {
                 
             {/* </div> */}
 
-            <ProductList products={filteredProducts} onDelete={handleDeleteClick} onEdit={editProduct}/>
+            {filteredProducts.length === 0 ? (
+                <p className="text-gray-500 text-center mt-10">No products found for "{search}"</p>
+            ) : (
+                <ProductList products={filteredProducts} onDelete={handleDeleteClick} onEdit={editProduct}/>
+            )}
 
             {open && (
                 <AddProductModal 

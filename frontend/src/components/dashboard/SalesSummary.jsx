@@ -28,9 +28,9 @@ const SalesSummary = () => {
         </select>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 min-h-[220px]">
         <ResponsiveContainer width="100%" height={"100%"}>
-          <BarChart data={data} barCategoryGap={30}>
+          <BarChart data={data} barCategoryGap={24}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2}/>
             <XAxis dataKey="day" />
             <YAxis />

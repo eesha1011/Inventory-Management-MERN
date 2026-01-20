@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PageHeader from "../components/PageHeader";
 import UserEditModal from "../components/users/UserEditModal";
 import UsersTable from "../components/users/UsersTable";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ConfirmModal from "../components/ConfirmModal";
+import { SearchContext } from "../context/SearchContext";
 
 
 const initialUsers = [
@@ -20,6 +21,8 @@ const Users = () => {
     
     const [editUser, setEditUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
+    const {search} = useContext(SearchContext);
 
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
@@ -58,12 +61,22 @@ const Users = () => {
         setSelectedUserId(null);
     }
 
+    const filteredUSers = search ? users.filter(user =>
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.role.toLowerCase().includes(search.toLowerCase())
+    ) : users;
+
     return (
         <DashboardLayout>
             <PageHeader title={"Users"} action={
                 <button onClick={() => {setEditUser(null); setShowModal(true);}} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 cursor-pointer" >+ Add User</button>
             }/>
-            <UsersTable users={users} onEdit={user => {setEditUser(user); setShowModal(true);}} onToggleStatus={handleToggleStatus} onDelete={handleDeleteClick} />
+
+            {filteredUSers.length === 0 && search && (
+                <p>No users found for "{search}"</p>
+            )}
+            <UsersTable users={filteredUSers} onEdit={user => {setEditUser(user); setShowModal(true);}} onToggleStatus={handleToggleStatus} onDelete={handleDeleteClick} />
             
             {showModal && (
                 <UserEditModal 

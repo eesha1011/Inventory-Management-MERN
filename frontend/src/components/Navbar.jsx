@@ -8,6 +8,10 @@ const Navbar = ({onMenuclick}) => {
     const {search, setSearch} = useContext(SearchContext);
     const {theme, toggleTheme} = useContext(ThemeContext);
 
+    const handleSearch = () => {
+        console.log("Searching for: ", search);
+    }
+
     return (
         <div className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
             
@@ -16,8 +20,8 @@ const Navbar = ({onMenuclick}) => {
 
             {/*Global Search (for users, products, etc.) */}
             <div className="flex items-center gap-2">
-                <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded px-3 py-1 w-64 focus:outline-none focus:ring" />
-                <button className="font-semibold text-gray-900 dark:text-gray-100 hover:text-gray-600 cursor-pointer dark:hover:text-gray-400"><Search className="w-5 h-5"/></button>
+                <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded px-3 py-1 w-64 focus:outline-none focus:ring" />
+                <button onClick={handleSearch} className="font-semibold text-gray-900 dark:text-gray-100 hover:text-gray-600 cursor-pointer dark:hover:text-gray-400"><Search className="w-5 h-5"/></button>
             </div>
 
             {/* Right side */}
