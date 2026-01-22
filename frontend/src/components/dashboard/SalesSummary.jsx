@@ -39,7 +39,7 @@ const SalesSummary = () => {
               dataKey="sales"
               fill="#2563eb"
               radius={[6, 6, 0, 0]}
-              barSize={18}
+              barSize={16}
               animationDuration={1200}
             />
           </BarChart>

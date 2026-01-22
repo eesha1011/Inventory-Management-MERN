@@ -15,7 +15,7 @@ const ProductList = ({products, onDelete, onEdit}) => {
     const columns = [
         {key: "name", label: "Name"},
         {key: "category", label: "Category"},
-        {key: "price", label: "Price"},
+        {key: "price", label: "Price (₹)"},
         {key: "stock", label: "Stock"},
     ]
 
@@ -25,8 +25,8 @@ const ProductList = ({products, onDelete, onEdit}) => {
             data={products}
             renderActions={(product) => (
                 <>
-                    <button onClick={() => onEdit(product.id)} className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">Edit</button>
-                    <button onClick={() => onDelete(product.id)} className="text-red-600 dark:text-red-400 cursor-pointer hover:underline">Delete</button>
+                    <button onClick={() => onEdit(product._id)} className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">Edit</button>
+                    <button onClick={() => onDelete(product._id)} className="text-red-600 dark:text-red-400 cursor-pointer hover:underline">Delete</button>
                 </>
             )}
         />

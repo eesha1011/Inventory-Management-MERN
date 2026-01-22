@@ -6,12 +6,17 @@ const AddProductModal = ({onclose, onAdd, onUpdate, initialData}) => {
         name: "",
         category: "",
         price: "",
-        stock: ""
+        stock: "",
     });
 
     useEffect(() => {
         if(initialData){
-            setForm(initialData);
+            setForm({
+                name: initialData.name || "",
+                category: initialData.category || "",
+                price: initialData.price || "",
+                stock: initialData.stock || "", 
+            });
         }
     }, [initialData]);
 
@@ -21,11 +26,14 @@ const AddProductModal = ({onclose, onAdd, onUpdate, initialData}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const payload = {...form, price: Number(form.price), stock: Number(form.stock)};
         
         if(initialData){
-            onUpdate({...form, id: initialData.id});
+            onUpdate(payload);
         } else {
-            onAdd(form);
+            onAdd(payload);
+            
             // setForm({
             //     name: "",
             //     category: "",

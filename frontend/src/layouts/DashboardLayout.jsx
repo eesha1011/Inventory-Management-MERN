@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { NavLink } from "react-router-dom";
 import { BanknoteArrowDown, CirclePile, LayoutDashboard, PackageSearch, Settings, Users } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const linkClass = "flex items-center space-x-2 px-4 py-2 rounded hover:bg-gray-800 transition dark:hover:bg-gray-700";
 
@@ -9,6 +10,25 @@ const DashboardLayout = ({children}) => {
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    const {user} = useAuth();
+
+    const adminMenu = [
+        {name: "Dashboard", path: "/", icon: LayoutDashboard},
+        {name: "Inventory", path: "/inventory", icon: CirclePile},
+        {name: "Products", path: "/products", icon: PackageSearch},
+        {name: "Users", path: "/users", icon: Users},
+        {name: "Expenses", path: "/expenses", icon: BanknoteArrowDown},
+        {name: "Settings", path: "/settings", icon: Settings},
+    ];
+
+    const userMenu = [
+        {name: "Dashboard", path: "/", icon: LayoutDashboard},
+        {name: "Products", path: "/products", icon: PackageSearch},
+        {name: "Settings", path: "/settings", icon: Settings},
+    ];
+
+    const menuItems = user?.role === "Admin" ? adminMenu : userMenu;
+ 
     return(
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
 
@@ -19,7 +39,20 @@ const DashboardLayout = ({children}) => {
             <aside className={`fixed md:static z-50 w-52 h-full bg-gray-900 dark:bg-gray-900 text-white p-4 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
                 <h1 className="text-xl font-bold mb-1">Inventory</h1>
 
-                <nav className="space-y-2 ">
+                <nav>
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                            <NavLink key={item.path} to={item.path} onClick={() => setSidebarOpen(false)} end className={({isActive}) => `${linkClass} ${isActive ? "bg-gray-800 dark:bg-gray-700 text-green-400" : ""}`}>
+                                <Icon className=" w-5 h-5"/>
+                                <span>{item.name}</span>
+                            </NavLink>
+                        )
+                    })}
+                </nav>
+
+                {/* <nav className="space-y-2 ">
                     <NavLink to={"/"} onClick={() => setSidebarOpen(false)} end className={({isActive}) => `${linkClass} ${isActive ? "bg-gray-800 dark:bg-gray-700 text-green-400" : ""}`}>
                         <LayoutDashboard className="w-5 h-5" />
                         <span>Dashboard</span>
@@ -49,7 +82,7 @@ const DashboardLayout = ({children}) => {
                         <Settings className="w-5 h-5" />
                         <span>Settings</span>
                     </NavLink>
-                </nav>
+                </nav> */}
             </aside>
 
             <div className="flex-1 flex flex-col">

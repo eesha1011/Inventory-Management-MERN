@@ -2,11 +2,13 @@ import { useContext } from "react";
 import { SearchContext } from "../context/SearchContext";
 import { ThemeContext } from "../context/ThemeContext";
 import { Sun, Moon, Menu, Search } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = ({onMenuclick}) => {
 
     const {search, setSearch} = useContext(SearchContext);
     const {theme, toggleTheme} = useContext(ThemeContext);
+    const {user, logout} = useAuth();
 
     const handleSearch = () => {
         console.log("Searching for: ", search);
@@ -37,9 +39,13 @@ const Navbar = ({onMenuclick}) => {
                 {/* Profile */}
                 <div className="flex items-center gap-2 cursor-pointer">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                        Admin
+                        {user?.name}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">A</div>
+                    {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                        {user?.role === "Admin" ? "A" : "U"}
+                    </span> */}
+                    <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 dark:text-gray-200 flex items-center justify-center">{user?.role?.charAt(0)}</div>
+                    <button onClick={logout} className="text-sm text-white font-semibold rounded p-1.5 cursor-pointer bg-red-400 hover:bg-red-500">Logout</button>
                 </div>
             </div>
         </div>
