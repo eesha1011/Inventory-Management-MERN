@@ -23,7 +23,7 @@ const DashboardLayout = ({children}) => {
 
     const userMenu = [
         {name: "Dashboard", path: "/", icon: LayoutDashboard},
-        {name: "Products", path: "/products", icon: PackageSearch},
+        {name: "Inventory", path: "/inventory", icon: CirclePile},
         {name: "Settings", path: "/settings", icon: Settings},
     ];
 
@@ -37,7 +37,10 @@ const DashboardLayout = ({children}) => {
             )}
 
             <aside className={`fixed md:static z-50 w-52 h-full bg-gray-900 dark:bg-gray-900 text-white p-4 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-                <h1 className="text-xl font-bold mb-1">Inventory</h1>
+                <div className="flex justify-center items-center p-1.5 space-x-2.5">
+                    <img src="https://w7.pngwing.com/pngs/824/73/png-transparent-inventory-management-software-business-inventory-control-purchasing-track-angle-people-warehouse-thumbnail.png" alt="logo" className="w-10 h-10 rounded-full" />
+                    <h1 className="text-xl font-bold mb-1">Inventory</h1>
+                </div>
 
                 <nav>
                     {menuItems.map((item) => {

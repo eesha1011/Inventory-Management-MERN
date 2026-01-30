@@ -5,13 +5,13 @@ import UsersTable from "../components/users/UsersTable";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ConfirmModal from "../components/ConfirmModal";
 import { SearchContext } from "../context/SearchContext";
-import { getUsers } from "../services/userApi";
+import { blockUser, deleteUser, getUsers, unblockUser, updateUser } from "../services/userApi";
 
 
-const initialUsers = [
-    {id: 1, name: "Eesha", email: "esha@gmail.com", role: "Admin", status: "Active"},
-    {id: 2, name: "Pratik", email: "pratik@gmail.com", role: "User", status: "Blocked"},
-];
+// const initialUsers = [
+//     {id: 1, name: "Eesha", email: "esha@gmail.com", role: "Admin", status: "Active"},
+//     {id: 2, name: "Pratik", email: "pratik@gmail.com", role: "User", status: "Blocked"},
+// ];
 
 const Users = () => {
 
@@ -35,33 +35,42 @@ const Users = () => {
         const fetchUsers = async () => {
             try {
                 const data = await getUsers();
-                console.log(("BACKEND USERS 👉", data));
-                setUsers(data);
+                // console.log(("BACKEND USERS 👉", data));
+                const mappedUsers = data.map(user => ({...user, status: user.isActive ? "Active" : "Blocked"}));
+                // console.log(mappedUsers[0]);
+                setUsers(mappedUsers);
             } catch (error) {
-                console.error("Users etch error", error);
+                console.error("Users fetch error", error);
             } finally {
                 setLoading(false);
             }
         }
 
         fetchUsers();
-        // localStorage.setItem("users", JSON.stringify(users));
-        // console.log("USERS STATE:", users);  
     
     }, []);
 
-    const handleSaveUser = (user) => {
-        if (editUser) {
-            setUsers(users.map(u => u._id === user._id ? user : u));
-        } else {
-            setUsers([...users, { ...user, _id: Date.now(), status: "Active" }]);
+    const handleSaveUser = async (user) => {
+        try {
+            const updatedUser = await updateUser(user._id, user);
+
+            setUsers(prev => prev.map(u => u._id === updatedUser._id ? {...updatedUser, status: updatedUser.isActive? "Active" : "Blocked"} : u));
+            setShowModal(false);
+            setEditUser(null);
+        } catch (error) {
+            console.error("Update failed", error);   
         }
-        setShowModal(false);
-        setEditUser(null);
     }
 
-    const handleToggleStatus = (id) => {
-        setUsers(users.map(u => u._id === id ? {...u, status: u.status === "Active" ? "Blocked" : "Active"} : u));
+    const handleToggleStatus = async (user) => {
+        try {
+            const updatedUser = user.isActive ? await blockUser(user._id) : await unblockUser(user._id);
+
+            setUsers(prev => prev.map(u => u._id === updatedUser._id ? {...updatedUser, status: updatedUser.isActive? "Active" : "Blocked"} : u));
+        } catch (error) {
+            console.error("Status update failed", error);
+            
+        }
     }
 
     // const handleDelete = (id) => {
@@ -73,10 +82,17 @@ const Users = () => {
         setShowConfirm(true);
     }
 
-    const confirmDelete = () => {
-        setUsers(users.filter(u => u._id !== selectedUserId));
-        setShowConfirm(false);
-        setSelectedUserId(null);
+    const confirmDelete = async () => {
+        try {
+            await deleteUser(selectedUserId);
+
+            setUsers(prev => prev.filter(u => u._id !== selectedUserId));
+            setShowConfirm(false);
+            setSelectedUserId(null);
+        } catch (error) {
+            console.error("Delete user error", error);
+            
+        }
     }
 
     const filteredUSers = search ? users.filter(user =>

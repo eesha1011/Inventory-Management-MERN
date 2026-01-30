@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,6 +19,11 @@ export class UsersController {
         return this.usersService.findAllUsers();
     }
 
+    @Patch(':id')
+    updateUser(@Param('id') id: string, @Body() body: any) {
+        return this.usersService.updateUser(id, body);
+    }
+
     @Patch("block/:id")
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('Admin')
@@ -31,6 +36,11 @@ export class UsersController {
     @Roles('Admin')
     unblockUser(@Param('id') id: string) {
         return this.usersService.unblockUser(id);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') id: string) {
+        return this.usersService.deleteUser(id);
     }
 }
 

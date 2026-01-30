@@ -36,6 +36,10 @@ export class UsersService {
         return this.userModel.find().select("-password");
     }
 
+    async updateUser(id: string, data: any) {
+        return this.userModel.findByIdAndUpdate(id, data, {new: true});
+    }
+
     async blockUser(id: string) {
         return this.userModel.findByIdAndUpdate(
             id,
@@ -50,5 +54,9 @@ export class UsersService {
             {isActive: true},
             {new: true},
         );
+    }
+
+    async deleteUser(id: string) {
+        return await this.userModel.findByIdAndDelete(id);
     }
 }

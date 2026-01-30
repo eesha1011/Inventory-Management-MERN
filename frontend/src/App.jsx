@@ -15,14 +15,14 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path='login' element={<Login/>}/>
+          <Route path='/login' element={<Login/>}/>
           <Route path='/' element={<ProtectedRoute allowedRoles={["Admin", "User"]}>
             <Dashboard/>
           </ProtectedRoute>}/>
-          <Route path='/inventory' element={<ProtectedRoute allowedRoles={["Admin"]}>
+          <Route path='/inventory' element={<ProtectedRoute allowedRoles={["Admin", "User"]}>
             <Inventory/>
           </ProtectedRoute>}/>
-          <Route path='/products' element={<ProtectedRoute allowedRoles={["Admin", "User"]}>
+          <Route path='/products' element={<ProtectedRoute allowedRoles={["Admin"]}>
             <Products/>
           </ProtectedRoute>}/>
           <Route path='/users' element={<ProtectedRoute allowedRoles={["Admin"]}>
