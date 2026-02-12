@@ -13,6 +13,7 @@ const ProductList = ({products, onDelete, onEdit}) => {
     }
 
     const columns = [
+        {key: "image", label: "Image"},
         {key: "name", label: "Name"},
         {key: "category", label: "Category"},
         {key: "price", label: "Price (₹)"},
@@ -32,7 +33,52 @@ const ProductList = ({products, onDelete, onEdit}) => {
         />
     )
 
-    // return (
+}
+
+export default ProductList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// return (
     //     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
     //         <table className="min-w-full text-sm">
     //             <thead className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -62,6 +108,3 @@ const ProductList = ({products, onDelete, onEdit}) => {
     //         </table>
     //     </div>
     // )
-}
-
-export default ProductList;

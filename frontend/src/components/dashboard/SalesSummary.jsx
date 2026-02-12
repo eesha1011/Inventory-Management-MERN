@@ -1,14 +1,43 @@
+import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { getSalesSummaryApi } from "../../services/dashboardService";
 
-const data = [
-  { day: "3/12", sales: 2500 },
-  { day: "2/16", sales: 1500 },
-  { day: "2/8", sales: 500 },
-  { day: "1/23", sales: 1400 },
-  { day: "1/8", sales: 4800 }
-];
+// const data = [
+//   { day: "3/12", sales: 2500 },
+//   { day: "2/16", sales: 1500 },
+//   { day: "2/8", sales: 500 },
+//   { day: "1/23", sales: 1400 },
+//   { day: "1/8", sales: 4800 }
+// ];
 
 const SalesSummary = () => {
+
+  const [chartData, setChartData] = useState([]);
+  const [summary, setSummary] = useState({
+    totalSales: 0,
+    growth: 0,
+    highestSalesDate: "",
+  });
+
+  const [type, setType] = useState('weekly');
+
+  useEffect(() => {
+    const fetchSalesSummary = async () => {
+      try {
+        const res = await getSalesSummaryApi();
+        setChartData(res.data.chart);
+        setSummary({
+          totalSales: res.data.totalSales,
+          growth: res.data.growth,
+          highestSalesDate: res.data.highestSalesDate,
+        });
+      } catch (error) {
+        console.error("Sales summary error", error);
+      }
+      
+      fetchSalesSummary();
+    }
+  }, [type]);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition h-full flex flex-col">
@@ -17,20 +46,20 @@ const SalesSummary = () => {
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Sales Summary</h3>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            $12.98m{" "}
-            <span className="text-green-500 text-sm font-medium">+5.48%</span>
+            ₹{summary.totalSales}
+            <span className="text-green-500 text-sm font-medium">+{summary.growth}%</span>
           </h2>
         </div>
 
-        <select className="border px-2 py-1 text-sm rounded text-gray-900 dark:text-gray-100">
-          <option className="dark:text-gray-900">Weekly</option>
-          <option className="dark:text-gray-900">Monthly</option>
+        <select value={type} onChange={(e) => setType(e.target.value)} className="border px-2 py-1 text-sm rounded text-gray-900 dark:text-gray-100">
+          <option value={"weekly"} className="dark:text-gray-900">Weekly</option>
+          <option value={"monthly"} className="dark:text-gray-900">Monthly</option>
         </select>
       </div>
 
       <div className="flex-1 min-h-[220px]">
         <ResponsiveContainer width="100%" height={"100%"}>
-          <BarChart data={data} barCategoryGap={24}>
+          <BarChart data={chartData} barCategoryGap={24}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2}/>
             <XAxis dataKey="day" />
             <YAxis />
@@ -48,7 +77,7 @@ const SalesSummary = () => {
 
       <div className="flex justify-between text-sm text-gray-800 mt-2">
         <span>5 days</span>
-        <span>Highest Sales Date: <span className="font-bold ">1/8/24</span></span>
+        <span>Highest Sales Date: <span className="font-bold ">{summary.highestSalesDate}</span></span>
       </div>
     </div>
   )

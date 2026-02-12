@@ -33,4 +33,40 @@ export class DashboardService {
             },
         ]);
     }
+
+    async getPopularProducts() {
+        return this.productModel
+        .find()
+        .sort({sold: -1})
+        .limit(7)
+        .select('name category price stock image sold');
+    }
+
+    async getSalesSummary(type: 'weekly' | 'monthly') {
+        const products = await this.productModel.find();
+        const chart: Record<string, number> = {};
+        let totaSales = 0;
+
+        products.forEach(product => {
+            const date = new Date(product.createdAt);
+            
+            const label = type === 'weekly' ? `${date.getDate()}/${date.getMonth() + 1}` : `${date.getMonth() + 1}/${date.getFullYear()}`;
+            
+            const sales = (product.price || 0) * (product.sold || 0);
+            totaSales += sales;
+            chart[label] = (chart[label] || 0) + sales;
+        });
+
+        const chartData = Object.entries(chart).map(([day, sales]) => ({
+            day,
+            sales: Number(sales),
+        }));
+
+        return {
+            totaSales,
+            growth: 5.48,
+            hightestSalesDate: chartData.length ? chartData.sort((a, b) => b.sales - a.sales)[0].day : null,
+            chart: chartData,
+        };
+    }
 }

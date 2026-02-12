@@ -10,8 +10,8 @@ export const getProductByIdApi = async (id) => {
     return response.data;
 };
 
-export const addProductApi = async (productData) => {
-    const response = await api.post('/products', productData);
+export const addProductApi = async (formData) => {
+    const response = await api.post('/products', formData);
     return response.data;
 };
 

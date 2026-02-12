@@ -17,9 +17,19 @@ const Table = ({columns, data, renderActions}) => {
 
                 <tbody>
                     {data.map(item => (
-                        <tr key={item.id} className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300 transition">
+                        <tr key={item._id} className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300 transition">
                             {columns.map(col => (
-                                <td key={col.key} className="px-4 py-3">{item[col.key]}</td>
+                                <td key={col.key} className="px-4 py-3">
+                                    {col.key === "image" ? (
+                                        item.image ? (
+                                            <img src={`http://localhost:5000${item.image}`} alt={item.name} className="w-14 h-12 object-cover rounded" />
+                                        ) : (
+                                            <span className="text-gray-400">No image</span>
+                                        )
+                                    ) : (
+                                        item[col.key]
+                                    )}
+                                </td>
                             ))}
                             {renderActions && (
                                 <td className="px-4 py-3 space-x-2">{renderActions(item)}</td>
